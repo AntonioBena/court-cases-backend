@@ -3,6 +3,7 @@ package com.interview.court.cases.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Builder
@@ -10,12 +11,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-@Data
+ //TODO make optimization
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "decision")
-public class Decision {
+public class Decision extends AuditingModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     private String decisionLabel; //TODO Presuda broj Kv-I-173/16, Odluka broj 29 Su-903/16

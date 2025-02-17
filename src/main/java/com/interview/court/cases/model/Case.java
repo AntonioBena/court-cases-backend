@@ -3,6 +3,7 @@ package com.interview.court.cases.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Builder
@@ -10,12 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-@Data
+@Entity //TODO make optimization
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "court_case")
-public class Case {
+public class Case extends AuditingModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
     @Column(unique=true, name = "case_label")
     private String caseLabel;

@@ -1,4 +1,4 @@
-package com.interview.court.cases.model.dto.requests;
+package com.interview.court.cases.model.dto;
 
 import com.interview.court.cases.model.DecisionType;
 import lombok.*;

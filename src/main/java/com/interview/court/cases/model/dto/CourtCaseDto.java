@@ -2,7 +2,6 @@ package com.interview.court.cases.model.dto;
 
 import com.interview.court.cases.model.CaseStatus;
 import com.interview.court.cases.model.Court;
-import com.interview.court.cases.model.dto.requests.DecisionDto;
 import lombok.*;
 
 import java.util.List;
