@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -19,4 +21,8 @@ public class ApplicationProperties {
     private boolean sendEmailVerification;
     @Value("${email.send.activationUrl}")
     private String activationUrl;
+    @Value("${application.security.create-enabled-users}")
+    private boolean createEnabledUsers;
+    @Value("#{${application.security.roles}}")
+    private List<String> listOfRoles;
 }

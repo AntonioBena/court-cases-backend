@@ -12,6 +12,7 @@ import com.interview.court.cases.service.AuthenticationService;
 import com.interview.court.cases.service.EmailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -30,6 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
 
+    //TODO add logging
     @Override
     public void register(RegistrationRequest request) throws MessagingException {
         var userRole = roleRepository.findByName("USER") //TODO add roles enumeration
@@ -46,11 +49,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         passwordEncoder.encode(request.getPassword())
                 )
                 .accountLocked(false)
-                .enabled(false) //TODO you can make some email service
+                .enabled(
+                        appProperties.isCreateEnabledUsers()
+                )
                 .roles(List.of(userRole))
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);
+        log.info("User registered successfully! {}", user);
     }
     private void sendValidationEmail(UserEntity user) throws MessagingException {
         String generatedToken = generateAndSaveActivationToken(6, user);
