@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/court")
+@RequestMapping(path = "court")
 public class CourtController {
 
     private final CourtService courtService;

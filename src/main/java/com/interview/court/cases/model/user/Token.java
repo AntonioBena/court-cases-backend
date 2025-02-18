@@ -24,7 +24,7 @@ public class Token implements Serializable {
     private String token;
     private LocalDateTime createdAt;
     private LocalDateTime validatedAt;
-    private String expiresAt;
+    private LocalDateTime expiresAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

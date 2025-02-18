@@ -84,7 +84,7 @@ public class UserEntity extends AuditingModel
         return enabled;
     }
 
-    private String fullName(){
+    public String fullName(){
         return firstName + " " + lastName;
     }
 }

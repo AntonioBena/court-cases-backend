@@ -15,4 +15,8 @@ public class ApplicationProperties {
     private String jwtSecretKey;
     @Value("${application.security.jwt.secret-key.expiration}")
     private long jwtExpiration;
+    @Value("${email.send.verification}")
+    private boolean sendEmailVerification;
+    @Value("${email.send.activationUrl}")
+    private String activationUrl;
 }

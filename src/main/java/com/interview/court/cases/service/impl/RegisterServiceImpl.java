@@ -1,6 +1,6 @@
 package com.interview.court.cases.service.impl;
 
-import com.interview.court.cases.model.UserEntity;
+import com.interview.court.cases.model.user.UserEntity;
 import com.interview.court.cases.model.dto.UserDto;
 import com.interview.court.cases.model.dto.requests.LoginRegisterUserRequest;
 import com.interview.court.cases.repository.UserRepository;

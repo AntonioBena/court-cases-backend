@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/case")
+@RequestMapping(path = "case")
 public class CaseController {
 
     private final CourtCaseService courtCaseService;
