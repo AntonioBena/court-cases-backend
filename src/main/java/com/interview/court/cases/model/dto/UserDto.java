@@ -15,5 +15,4 @@ public class UserDto {
     private String lastName;
     private String password;
     private String email;
-    private boolean isActive;
 }

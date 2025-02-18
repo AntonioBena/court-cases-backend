@@ -1,7 +1,7 @@
 package com.interview.court.cases.service.impl;
 
-import com.interview.court.cases.model.Case;
-import com.interview.court.cases.model.Court;
+import com.interview.court.cases.model.court_case.Case;
+import com.interview.court.cases.model.court.Court;
 import com.interview.court.cases.model.dto.CourtCaseDto;
 import com.interview.court.cases.model.dto.requests.CaseRequest;
 import com.interview.court.cases.repository.CaseRepository;
@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import static com.interview.court.cases.model.CaseStatus.IN_PROGRESS;
+import static com.interview.court.cases.model.court_case.CaseStatus.IN_PROGRESS;
 
 @Slf4j
 @Service

@@ -1,6 +1,6 @@
 package com.interview.court.cases.repository;
 
-import com.interview.court.cases.model.Decision;
+import com.interview.court.cases.model.decision.Decision;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

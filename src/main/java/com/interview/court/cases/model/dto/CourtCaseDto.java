@@ -1,7 +1,7 @@
 package com.interview.court.cases.model.dto;
 
-import com.interview.court.cases.model.CaseStatus;
-import com.interview.court.cases.model.Court;
+import com.interview.court.cases.model.court_case.CaseStatus;
+import com.interview.court.cases.model.court.Court;
 import lombok.*;
 
 import java.util.List;

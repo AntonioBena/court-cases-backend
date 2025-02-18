@@ -1,5 +1,8 @@
-package com.interview.court.cases.model;
+package com.interview.court.cases.model.court_case;
 
+import com.interview.court.cases.model.AuditingModel;
+import com.interview.court.cases.model.court.Court;
+import com.interview.court.cases.model.decision.Decision;
 import jakarta.persistence.*;
 import lombok.*;
 

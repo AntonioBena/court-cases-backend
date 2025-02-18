@@ -1,6 +1,6 @@
 package com.interview.court.cases.service.impl;
 
-import com.interview.court.cases.model.Court;
+import com.interview.court.cases.model.court.Court;
 import com.interview.court.cases.model.dto.CourtDto;
 import com.interview.court.cases.model.dto.requests.CourtRequest;
 import com.interview.court.cases.repository.CourtRepository;

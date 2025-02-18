@@ -1,6 +1,6 @@
 package com.interview.court.cases.model.dto;
 
-import com.interview.court.cases.model.DecisionType;
+import com.interview.court.cases.model.decision.DecisionType;
 import lombok.*;
 
 import java.time.LocalDate;
