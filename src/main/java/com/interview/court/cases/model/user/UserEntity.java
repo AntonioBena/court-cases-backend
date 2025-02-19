@@ -20,6 +20,7 @@ import java.util.List;
 @Entity
 //TODO make optimiization
 @EqualsAndHashCode(callSuper = false)
+@ToString
 @Table(name = "user_entity")
 public class UserEntity extends AuditingModel
         implements Serializable, UserDetails, Principal {
@@ -38,8 +39,8 @@ public class UserEntity extends AuditingModel
     private boolean enabled;
     private boolean accountLocked;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Override
     public String getName() {
@@ -48,10 +49,7 @@ public class UserEntity extends AuditingModel
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

@@ -23,6 +23,8 @@ public class ApplicationProperties {
     private String activationUrl;
     @Value("${application.security.create-enabled-users}")
     private boolean createEnabledUsers;
-    @Value("#{${application.security.roles}}")
-    private List<String> listOfRoles;
+    @Value("${application.security.activation.token.length}")
+    private int activationTokenLength;
+    @Value("${application.security.activation.code.chars}")
+    private String activationCodeChars;
 }
