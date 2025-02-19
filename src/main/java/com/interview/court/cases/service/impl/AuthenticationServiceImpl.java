@@ -117,18 +117,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private String generateAndSaveActivationToken(UserEntity user) {
-        var generatedToken = generateActivationCode();
+        var generatedActivationToken = generateActivationToken();
         var token = Token.builder()
-                .token(generatedToken)
+                .token(generatedActivationToken)
                 .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .expiresAt(LocalDateTime.now()
+                        .plusMinutes(appProperties.getActivationTokenExpireMins()))
                 .user(user)
                 .build();
         tokenRepository.save(token);
-        return generatedToken;
+        return generatedActivationToken;
     }
 
-    private String generateActivationCode() {
+    private String generateActivationToken() {
         String chars = appProperties.getActivationCodeChars();
         StringBuilder codeBuilder = new StringBuilder();
         SecureRandom secureRandom = new SecureRandom();

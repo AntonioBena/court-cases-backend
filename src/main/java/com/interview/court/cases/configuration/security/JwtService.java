@@ -34,10 +34,10 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(getSignInKey()) //TODO try to remove deprication
                 .build()
-                .parseClaimsJws(token) //TODO Test and change depricated methods
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -82,7 +82,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Key getSignInKey() {
+    private Key getSignInKey() { //TODO change this to remove deprication
         byte[] keyBytes = Decoders.BASE64.decode(appProps.getJwtSecretKey());
         return Keys.hmacShaKeyFor(keyBytes);
     }

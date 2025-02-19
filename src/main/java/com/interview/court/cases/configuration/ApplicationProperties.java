@@ -6,8 +6,6 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -27,4 +25,6 @@ public class ApplicationProperties {
     private int activationTokenLength;
     @Value("${application.security.activation.code.chars}")
     private String activationCodeChars;
+    @Value("${application.security.activation-token.expire.mins}")
+    private int activationTokenExpireMins;
 }

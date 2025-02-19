@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @AllArgsConstructor
@@ -18,9 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-//TODO make optimiization
-@EqualsAndHashCode(callSuper = false)
-@ToString
 @Table(name = "user_entity")
 public class UserEntity extends AuditingModel
         implements Serializable, UserDetails, Principal {
@@ -84,5 +82,31 @@ public class UserEntity extends AuditingModel
 
     public String fullName(){
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return enabled == that.enabled && accountLocked == that.accountLocked && Objects.equals(id, that.id) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(password, that.password) && Objects.equals(email, that.email) && role == that.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, password, email, enabled, accountLocked, role);
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", enabled=" + enabled +
+                ", accountLocked=" + accountLocked +
+                ", role=" + role +
+                '}';
     }
 }

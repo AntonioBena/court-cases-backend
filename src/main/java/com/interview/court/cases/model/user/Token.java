@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Builder
 @AllArgsConstructor
@@ -12,8 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-//TODO make optimiization
-@EqualsAndHashCode(callSuper = false)
 @Table(name = "token")
 public class Token implements Serializable {
 
@@ -29,4 +28,28 @@ public class Token implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token1 = (Token) o;
+        return Objects.equals(id, token1.id) && Objects.equals(token, token1.token) && Objects.equals(createdAt, token1.createdAt) && Objects.equals(validatedAt, token1.validatedAt) && Objects.equals(expiresAt, token1.expiresAt) && Objects.equals(user, token1.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, token, createdAt, validatedAt, expiresAt, user);
+    }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "id=" + id +
+                ", token='" + token + '\'' +
+                ", createdAt=" + createdAt +
+                ", validatedAt=" + validatedAt +
+                ", expiresAt=" + expiresAt +
+                ", user=" + user +
+                '}';
+    }
 }
