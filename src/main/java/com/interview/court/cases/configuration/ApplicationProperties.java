@@ -27,4 +27,6 @@ public class ApplicationProperties {
     private String activationCodeChars;
     @Value("${application.security.activation-token.expire.mins}")
     private int activationTokenExpireMins;
+    @Value("${application.security.allowed-origins}")
+    private String allowedOrigins;
 }
