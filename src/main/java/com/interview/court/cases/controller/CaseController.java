@@ -1,7 +1,7 @@
 package com.interview.court.cases.controller;
 
 import com.interview.court.cases.model.dto.CourtCaseDto;
-import com.interview.court.cases.model.dto.requests.CaseRequest;
+import com.interview.court.cases.model.dto.requests.CaseAndCourtRequest;
 import com.interview.court.cases.service.CourtCaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class CaseController {
     private final CourtCaseService courtCaseService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<CourtCaseDto> createCourtCase(@RequestBody CaseRequest request) {
+    public ResponseEntity<CourtCaseDto> createCourtCase(@RequestBody CaseAndCourtRequest request) {
         return new ResponseEntity<>(courtCaseService.createCaseWithCourt(request), HttpStatus.OK); //TODO all
     }
 }

@@ -7,18 +7,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Objects;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_entity")
 public class UserEntity extends AuditingModel
         implements Serializable, UserDetails, Principal {
@@ -30,7 +31,7 @@ public class UserEntity extends AuditingModel
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    @Column(name = "user_password") //TODO will be hashed
+    @Column(name = "user_password")
     private String password;
     @Column(name = "user_email", unique = true)
     private String email;
@@ -47,7 +48,8 @@ public class UserEntity extends AuditingModel
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        var authority = new SimpleGrantedAuthority(role.name());
+        return Collections.singletonList(authority);
     }
 
     @Override
@@ -85,18 +87,6 @@ public class UserEntity extends AuditingModel
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
-        return enabled == that.enabled && accountLocked == that.accountLocked && Objects.equals(id, that.id) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(password, that.password) && Objects.equals(email, that.email) && role == that.role;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, password, email, enabled, accountLocked, role);
-    }
-
-    @Override
     public String toString() {
         return "UserEntity{" +
                 "id=" + id +
@@ -108,5 +98,17 @@ public class UserEntity extends AuditingModel
                 ", accountLocked=" + accountLocked +
                 ", role=" + role +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return enabled == that.enabled && accountLocked == that.accountLocked && Objects.equals(id, that.id) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(password, that.password) && Objects.equals(email, that.email) && role == that.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, password, email, enabled, accountLocked, role);
     }
 }

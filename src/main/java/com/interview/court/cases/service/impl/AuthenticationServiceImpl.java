@@ -1,7 +1,7 @@
 package com.interview.court.cases.service.impl;
 
 import com.interview.court.cases.configuration.ApplicationProperties;
-import com.interview.court.cases.configuration.security.JwtService;
+import com.interview.court.cases.configuration.security.JwtUtils;
 import com.interview.court.cases.model.dto.requests.AuthenticationRequest;
 import com.interview.court.cases.model.dto.requests.RegistrationRequest;
 import com.interview.court.cases.model.dto.response.AuthenticationResponse;
@@ -17,6 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,9 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.interview.court.cases.model.user.UserRole.USER;
 
@@ -38,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final JwtUtils jwtUtils;
 
     //TODO add logging
     @Override
@@ -67,17 +74,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var claims = new HashMap<String, Object>();
-        var user = (UserEntity) auth.getPrincipal();
-        claims.put("fullName", user.fullName());
-        var jwtToken = jwtService.generateToken(claims, user);
-        log.info("JWT user: {}", user);
+        Authentication authentication;
+        try {
+            authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        } catch (AuthenticationException exception) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", "Bad credentials");
+            map.put("status", false);
+            throw new IllegalStateException("Bad credentials", exception);
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        log.info("logged in as: " + userDetails.getUsername() + ", roles: " + roles + ", jwtToken: " + jwtToken);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

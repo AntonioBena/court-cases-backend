@@ -5,16 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 @Configuration
 public class ApplicationProperties {
-    @Value("${application.security.jwt.secret-key.key}")
-    private String jwtSecretKey;
-    @Value("${application.security.jwt.secret-key.expiration}")
-    private long jwtExpiration;
     @Value("${email.send.verification}")
     private boolean sendEmailVerification;
     @Value("${email.send.activationUrl}")
@@ -29,4 +26,10 @@ public class ApplicationProperties {
     private int activationTokenExpireMins;
     @Value("${application.security.allowed-origins}")
     private String allowedOrigins;
+
+    @Value("${application.security.jwt-expiration}")
+    private String jwtExpiration;
+
+    @Value("${application.security.jwt.secret}")
+    private String jwtSecret;
 }
