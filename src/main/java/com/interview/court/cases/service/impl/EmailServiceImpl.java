@@ -32,7 +32,7 @@ public class EmailServiceImpl implements EmailService {
                           String confirmationUrl,
                           String activationCode,
                           String subject) throws MessagingException {
-        log.info("Sending email to user: " + userName);
+        log.info("Sending email to user: {}", userName);
         String templateName;
         if(emailTemplate == null){
             templateName = "confirm-email";

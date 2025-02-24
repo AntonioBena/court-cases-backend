@@ -2,6 +2,8 @@ package com.interview.court.cases.service.impl;
 
 import com.interview.court.cases.configuration.ApplicationProperties;
 import com.interview.court.cases.configuration.security.JwtUtils;
+import com.interview.court.cases.exception.auth.AuthTokenNotFoundException;
+import com.interview.court.cases.exception.domain.RegisteredUserException;
 import com.interview.court.cases.model.dto.requests.AuthenticationRequest;
 import com.interview.court.cases.model.dto.requests.RegistrationRequest;
 import com.interview.court.cases.model.dto.response.AuthenticationResponse;
@@ -16,6 +18,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -28,10 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.interview.court.cases.model.user.UserRole.USER;
 
@@ -51,7 +51,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void registerUser(RegistrationRequest request) throws MessagingException {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalStateException("User already exists!"); //TODO exception
+            log.error("User with email {} already exists", request.getEmail());
+            throw new RegisteredUserException("User already registered!");
         }
 
         var user = UserEntity.builder()
@@ -78,11 +79,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        } catch (AuthenticationException exception) { //TODO add BadCredencials exceptopn
-            Map<String, Object> map = new HashMap<>();
-            map.put("message", "Bad credentials");
-            map.put("status", false);
-            throw new IllegalStateException("Bad credentials", exception);
+        } catch (AuthenticationException exception) {
+            log.error("Authentication failed, bad credentials: {}", exception.getMessage());
+            throw new BadCredentialsException("Bad credentials", exception);
         }
 
         log.info("User authenticated successfully! {}", authentication.getPrincipal());
@@ -95,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        log.info("logged in as: " + userDetails.getUsername() + ", roles: " + roles + ", jwtToken: " + jwtToken);
+        log.info("logged in as: {}, roles: {}, jwtToken: {}", userDetails.getUsername(), roles, jwtToken);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -104,8 +103,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void activateAccount(String activationCode) throws MessagingException {
-        var savedToken = tokenRepository.findByToken(activationCode) //TODO exception handling
-                .orElseThrow(() -> new IllegalStateException("Token not found"));
+        var savedToken = tokenRepository.findByToken(activationCode)
+                .orElseThrow(() -> new AuthTokenNotFoundException("Token not found!"));
 
         var user = savedToken.getUser();
         log.info("Activating account for user: {}", user);
@@ -116,6 +115,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         var foundUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         foundUser.setEnabled(true);
         userRepository.save(foundUser);
         savedToken.setValidatedAt(LocalDateTime.now());

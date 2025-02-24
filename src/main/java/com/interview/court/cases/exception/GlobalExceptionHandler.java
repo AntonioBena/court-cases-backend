@@ -1,5 +1,10 @@
 package com.interview.court.cases.exception;
 
+import com.interview.court.cases.exception.auth.*;
+import com.interview.court.cases.exception.domain.CaseException;
+import com.interview.court.cases.exception.domain.CourtException;
+import com.interview.court.cases.exception.domain.DecisionException;
+import com.interview.court.cases.exception.domain.RegisteredUserException;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +26,7 @@ import static org.springframework.http.HttpStatus.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(LockedException.class)
-    public ResponseEntity<ExceptionResponse> handleException(LockedException exp){
+    public ResponseEntity<ExceptionResponse> handleException(LockedException exp) {
         return ResponseEntity
                 .status(UNAUTHORIZED)
                 .body(
@@ -34,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ExceptionResponse> handleException(DisabledException exp){
+    public ResponseEntity<ExceptionResponse> handleException(DisabledException exp) {
         return ResponseEntity
                 .status(UNAUTHORIZED)
                 .body(
@@ -47,7 +52,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ExceptionResponse> handleException(BadCredentialsException exp){
+    public ResponseEntity<ExceptionResponse> handleException(BadCredentialsException exp) {
         return ResponseEntity
                 .status(UNAUTHORIZED)
                 .body(
@@ -60,7 +65,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<ExceptionResponse> handleException(MessagingException exp){
+    public ResponseEntity<ExceptionResponse> handleException(MessagingException exp) {
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
                 .body(
@@ -71,7 +76,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException exp){
+    public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException exp) {
         Set<String> errors = new HashSet<>();
         exp.getBindingResult().getAllErrors().forEach(error -> {
             var errorMessage = error.getDefaultMessage();
@@ -87,7 +92,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleException(Exception exp){
+    public ResponseEntity<ExceptionResponse> handleException(Exception exp) {
         exp.printStackTrace();
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
@@ -98,5 +103,59 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
-    //TODO add custom exception handling
+
+    @ExceptionHandler(AuthTokenNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleException(AuthTokenNotFoundException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(RegisteredUserException.class)
+    public ResponseEntity<ExceptionResponse> handleException(RegisteredUserException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(CaseException.class)
+    public ResponseEntity<ExceptionResponse> handleException(CaseException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(CourtException.class)
+    public ResponseEntity<ExceptionResponse> handleException(CourtException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(DecisionException.class)
+    public ResponseEntity<ExceptionResponse> handleException(DecisionException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
 }

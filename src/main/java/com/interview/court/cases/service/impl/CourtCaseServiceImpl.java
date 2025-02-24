@@ -1,5 +1,7 @@
 package com.interview.court.cases.service.impl;
 
+import com.interview.court.cases.exception.domain.CaseException;
+import com.interview.court.cases.exception.domain.CourtException;
 import com.interview.court.cases.model.court_case.Case;
 import com.interview.court.cases.model.court.Court;
 import com.interview.court.cases.model.decision.Decision;
@@ -8,7 +10,6 @@ import com.interview.court.cases.model.dto.requests.CaseAndCourtRequest;
 import com.interview.court.cases.model.dto.response.PageResponse;
 import com.interview.court.cases.repository.CaseRepository;
 import com.interview.court.cases.repository.CourtRepository;
-import com.interview.court.cases.repository.DecisionRepository;
 import com.interview.court.cases.service.CourtCaseService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,8 @@ public class CourtCaseServiceImpl implements CourtCaseService {
         var caseRequestDto = caseAndCourtRequest.getCourtCaseDto();
 
         if (caseRepository.existsByCaseLabel(caseRequestDto.getCaseLabel())) {
-            throw new IllegalStateException("Case already exists!");
+            log.error("Case with label {} already exists", caseRequestDto.getCaseLabel());
+            throw new CaseException("Case already exists!");
         }
 
         var newCourt = courtRepository.findCourtByCourtName(courtRequestDto.getCourtName())
@@ -67,10 +69,14 @@ public class CourtCaseServiceImpl implements CourtCaseService {
 
         log.info("input request: {}", caseAndCourtRequest);
         var caseToUpdate = caseRepository.findCaseByCaseLabel(caseRequestDto.getCaseLabel())
-                .orElseThrow(()->new IllegalStateException("case for update doesnt exist")); //TODO exeptions
+                .orElseThrow(()-> {
+                    log.error("Case with label {} not found", caseRequestDto.getCaseLabel());
+                    return new CaseException("case for update doesnt exist");
+                });
 
         if(!courtRepository.existsById(courtRequestDto.getId())) {
-            throw new IllegalStateException("court not found");
+            log.error("Court with id {} not found", courtRequestDto.getId());
+            throw new CourtException("court not found");
         }
         var newCourt = courtRepository.save(mapper.map(courtRequestDto, Court.class));
 
@@ -93,7 +99,6 @@ public class CourtCaseServiceImpl implements CourtCaseService {
         log.info("updated case: {}", caseToUpdate);
 
         var savedc = caseRepository.save(caseToUpdate);
-
         return mapper.map(savedc, CourtCaseDto.class);
     }
 

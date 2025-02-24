@@ -1,5 +1,6 @@
 package com.interview.court.cases.service.impl;
 
+import com.interview.court.cases.exception.domain.CourtException;
 import com.interview.court.cases.model.court.Court;
 import com.interview.court.cases.model.dto.CourtDto;
 import com.interview.court.cases.model.dto.requests.CourtRequest;
@@ -8,11 +9,8 @@ import com.interview.court.cases.service.CourtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -27,13 +25,15 @@ public class CourtServiceImpl implements CourtService {
     public ResponseEntity<?> createNewCourt(CourtRequest courtRequest) {
         var court = courtRequest.getCourtDto();
         log.info("Creating new court: {}", court);
-        return courtRepository.existsByCourtName(court.getCourtName()) ?
-                returnErrorAndLog(court)
-                : ResponseEntity.ok(
-                        mapper.map(
-                                courtRepository.save(
-                                        mapper.map(court, Court.class)
-                                ), CourtDto.class)
+        if (courtRepository.existsByCourtName(court.getCourtName())) {
+            log.error("Court already exists: {}", court.getCourtName());
+            throw new CourtException("You can not create court with name that is already in use");
+        }
+        return ResponseEntity.ok(
+                mapper.map(
+                        courtRepository.save(
+                                mapper.map(court, Court.class)
+                        ), CourtDto.class)
         );
     }
 
@@ -44,16 +44,10 @@ public class CourtServiceImpl implements CourtService {
         return courtRepository.findCourtByCourtName(courtDto.getCourtName())
                 .map(c -> updateCourtWithNewData(courtDto, c))
                 .map(c -> mapper.map(c, CourtDto.class))
-                .orElseThrow(() -> new IllegalStateException("Court not found!")); //TODO custom exception
-    }
-
-    private ResponseEntity<?>returnErrorAndLog(CourtDto court){
-        log.error("Error while creating court: {}", court);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(
-                        Map.of("error",
-                                "Court with name: "+ court.getCourtName() +
-                                        " Already exist!."));
+                .orElseThrow(() -> {
+                    log.error("Court with name {} not found", courtDto.getCourtName());
+                    return new CourtException("Court not found!");
+                });
     }
 
     private Court updateCourtWithNewData(CourtDto courtDto, Court court) {
