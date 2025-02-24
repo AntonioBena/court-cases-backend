@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
-@EqualsAndHashCode //TODO ispraviti kasnije
 public class AuthenticationRequest {
     @Size(min = 8, message = "Password should be minimum 8 chars long")
     @NotEmpty(message = "Password is mandatory")
@@ -22,4 +22,24 @@ public class AuthenticationRequest {
     @NotEmpty(message = "Email is mandatory")
     @NotBlank(message = "Email is mandatory")
     private String email;
+
+    @Override
+    public String toString() {
+        return "AuthenticationRequest{" +
+                "password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthenticationRequest that = (AuthenticationRequest) o;
+        return Objects.equals(password, that.password) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(password, email);
+    }
 }

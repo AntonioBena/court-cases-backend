@@ -4,7 +4,6 @@ import com.interview.court.cases.model.court_case.CaseStatus;
 import com.interview.court.cases.model.court.Court;
 import lombok.*;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 

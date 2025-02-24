@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,11 +48,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
-    //TODO add logging
     @Override
     public void registerUser(RegistrationRequest request) throws MessagingException {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalStateException("User already exists!");
+            throw new IllegalStateException("User already exists!"); //TODO exception
         }
 
         var user = UserEntity.builder()
@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
                 .accountLocked(false)
                 .enabled(
-                        appProperties.isCreateEnabledUsers()
+                        appProperties.isCreateEnabledUsers() //should be false
                 )
                 .role(USER)
                 .build();
@@ -78,20 +78,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        } catch (AuthenticationException exception) {
+        } catch (AuthenticationException exception) { //TODO add BadCredencials exceptopn
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
             map.put("status", false);
             throw new IllegalStateException("Bad credentials", exception);
         }
 
+        log.info("User authenticated successfully! {}", authentication.getPrincipal());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         log.info("logged in as: " + userDetails.getUsername() + ", roles: " + roles + ", jwtToken: " + jwtToken);
 
@@ -104,7 +106,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void activateAccount(String activationCode) throws MessagingException {
         var savedToken = tokenRepository.findByToken(activationCode) //TODO exception handling
                 .orElseThrow(() -> new IllegalStateException("Token not found"));
+
         var user = savedToken.getUser();
+        log.info("Activating account for user: {}", user);
+
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(user);
             throw new IllegalStateException("Token expired!");
@@ -115,6 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(foundUser);
         savedToken.setValidatedAt(LocalDateTime.now());
         tokenRepository.save(savedToken);
+        log.info("Activated account for user: {}", user);
     }
 
     private void sendValidationEmail(UserEntity user) throws MessagingException {
@@ -143,6 +149,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .user(user)
                 .build();
         tokenRepository.save(token);
+        log.info("Generated activation token for user: {}", user.getEmail());
         return generatedActivationToken;
     }
 

@@ -40,7 +40,7 @@ public class Case extends AuditingModel implements Serializable {
     @JoinColumn(name = "case_id")
     private Set<Decision> decisions;
 
-    ///TODO resolvind dedecision should be in decisions, Kv-I-173/16
+    ///eg Kv-I-173/16
     @Column(name = "resolved_with_decision")
     private String resolvingDecisionLabel;
 

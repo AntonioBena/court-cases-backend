@@ -14,7 +14,6 @@ import java.util.Optional;
 public interface CaseRepository extends JpaRepository<Case, Long> {
     boolean existsByCaseLabel(String caseLabel);
     Optional<Case> findCaseByCaseLabel(String caseLabel);
-
     Page<Case> findAllBy(Pageable pageable);
 
     @Query("""

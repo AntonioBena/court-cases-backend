@@ -26,18 +26,14 @@ public class CourtServiceImpl implements CourtService {
     @Override
     public ResponseEntity<?> createNewCourt(CourtRequest courtRequest) {
         var court = courtRequest.getCourtDto();
-
+        log.info("Creating new court: {}", court);
         return courtRepository.existsByCourtName(court.getCourtName()) ?
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(
-                                Map.of("error",
-                                        "Court with name: "+ court.getCourtName() +
-                                                " Already exist!."))
+                returnErrorAndLog(court)
                 : ResponseEntity.ok(
                         mapper.map(
                                 courtRepository.save(
                                         mapper.map(court, Court.class)
-                                ), CourtDto.class) //TODO fix this
+                                ), CourtDto.class)
         );
     }
 
@@ -49,6 +45,15 @@ public class CourtServiceImpl implements CourtService {
                 .map(c -> updateCourtWithNewData(courtDto, c))
                 .map(c -> mapper.map(c, CourtDto.class))
                 .orElseThrow(() -> new IllegalStateException("Court not found!")); //TODO custom exception
+    }
+
+    private ResponseEntity<?>returnErrorAndLog(CourtDto court){
+        log.error("Error while creating court: {}", court);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(
+                        Map.of("error",
+                                "Court with name: "+ court.getCourtName() +
+                                        " Already exist!."));
     }
 
     private Court updateCourtWithNewData(CourtDto courtDto, Court court) {

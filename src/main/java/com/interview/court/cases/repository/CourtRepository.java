@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CourtRepository extends JpaRepository<Court, Long> {
     boolean existsByCourtName(String courtName);
-   // Court findCourtByCourtName(String courtName);
     Optional<Court> findCourtByCourtName(String courtName);
 }

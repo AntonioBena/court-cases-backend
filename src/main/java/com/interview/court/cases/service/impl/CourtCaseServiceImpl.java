@@ -55,6 +55,7 @@ public class CourtCaseServiceImpl implements CourtCaseService {
                 .description(caseRequestDto.getDescription())
                 .build();
 
+        log.info("Created new case: {}", newCase);
         return mapper.map(caseRepository.save(newCase), CourtCaseDto.class);
     }
 
@@ -99,6 +100,7 @@ public class CourtCaseServiceImpl implements CourtCaseService {
     @Override
     public PageResponse<CourtCaseDto> getAllDisplayableCases(int page, int size, boolean desc, String caseLabel,
                                         String courtName){
+        log.info("Get cases by filtering caseLabel: {}", caseLabel);
         Pageable pageable = PageRequest.of(page, size,
                 desc ? Sort.by("createdAt").descending() : Sort.by("createdAt").ascending());
         Page<Case> cases = caseRepository.findAllCasesByParam(pageable, caseLabel, courtName);
@@ -109,6 +111,7 @@ public class CourtCaseServiceImpl implements CourtCaseService {
     public PageResponse<CourtCaseDto> getAllDisplayableCases(int page, int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Case> cases = caseRepository.findAllBy(pageable);
+        log.info("Get all cases by param: {}", cases);
         return mapCourtCaseToPageResponse(cases);
     }
 

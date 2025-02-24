@@ -13,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class DecisionDto {
     private Long id;
-    private String decisionLabel; //TODO Presuda broj Kv-I-173/16, Odluka broj 29 Su-903/16
+    private String decisionLabel; //Presuda broj Kv-I-173/16, Odluka broj 29 Su-903/16
     private String decisionDescription;
     private DecisionType decisionType;
     private LocalDateTime decisionDate;

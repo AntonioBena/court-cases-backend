@@ -17,12 +17,12 @@ public class CaseController {
     private final CourtCaseService courtCaseService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<CourtCaseDto> createCourtCase(@RequestBody CaseAndCourtRequest request) {
+    public ResponseEntity<?> createCourtCase(@RequestBody CaseAndCourtRequest request) {
         return new ResponseEntity<>(courtCaseService.createCaseWithCourt(request), HttpStatus.OK); //TODO all
     }
 
     @PostMapping(path = "/update")
-    public ResponseEntity<CourtCaseDto> updateCourtCase(@RequestBody CaseAndCourtRequest request) {
+    public ResponseEntity<?> updateCourtCase(@RequestBody CaseAndCourtRequest request) {
         return new ResponseEntity<>(courtCaseService.updateCourtCase(request), HttpStatus.OK);
     }
 
