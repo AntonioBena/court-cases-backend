@@ -1,7 +1,6 @@
 package com.interview.court.cases.model.dto;
 
 import com.interview.court.cases.model.court_case.CaseStatus;
-import com.interview.court.cases.model.court.Court;
 import lombok.*;
 
 import java.util.Objects;
@@ -17,9 +16,23 @@ public class CourtCaseDto {
     private String caseLabel;
     private CaseStatus caseStatus;
     private String description;
-    private Court court;
+    private CourtDto court;
     private Set<DecisionDto> decisions;
     private String resolvingDecisionLabel;
+
+    @Override
+    public String
+    toString() {
+        return "CourtCaseDto{" +
+                "id=" + id +
+                ", caseLabel='" + caseLabel + '\'' +
+                ", caseStatus=" + caseStatus +
+                ", description='" + description + '\'' +
+                ", court=" + court +
+                ", decisions=" + decisions +
+                ", resolvingDecisionLabel='" + resolvingDecisionLabel + '\'' +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -31,18 +44,5 @@ public class CourtCaseDto {
     @Override
     public int hashCode() {
         return Objects.hash(id, caseLabel, caseStatus, description, court, decisions, resolvingDecisionLabel);
-    }
-
-    @Override
-    public String toString() {
-        return "CourtCaseDto{" +
-                "id=" + id +
-                ", caseLabel='" + caseLabel + '\'' +
-                ", caseStatus=" + caseStatus +
-                ", description='" + description + '\'' +
-                ", court=" + court +
-                ", decisions=" + decisions +
-                ", resolvingDecisionLabel='" + resolvingDecisionLabel + '\'' +
-                '}';
     }
 }

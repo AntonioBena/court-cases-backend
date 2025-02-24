@@ -3,11 +3,9 @@ package com.interview.court.cases.model.dto.requests;
 
 import com.interview.court.cases.model.dto.CourtCaseDto;
 import com.interview.court.cases.model.dto.CourtDto;
-import com.interview.court.cases.model.dto.DecisionDto;
 import lombok.*;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Builder
 @Getter

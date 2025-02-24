@@ -50,6 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void registerUser(RegistrationRequest request) throws MessagingException {
+        log.info("Registration request email {}, lastName {}, firstName {}", request.getEmail(), request.getLastName(), request.getFirstName());
         if (userRepository.existsByEmail(request.getEmail())) {
             log.error("User with email {} already exists", request.getEmail());
             throw new RegisteredUserException("User already registered!");
@@ -75,6 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        log.info("Authenticate request: {}", request);
         Authentication authentication;
         try {
             authentication = authenticationManager

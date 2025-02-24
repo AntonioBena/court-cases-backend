@@ -37,7 +37,17 @@ public class SecurityFilterConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/demo/**").permitAll()
+                        //swagger
+                        .requestMatchers("/v2/api/docs").permitAll()
+                        .requestMatchers("/v3/api/docs").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-resources").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+                        .requestMatchers("/configuration/ui").permitAll()
+                        .requestMatchers("/configuration/security").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 );
         http.sessionManagement(
