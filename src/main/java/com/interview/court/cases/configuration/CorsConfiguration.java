@@ -3,13 +3,8 @@ package com.interview.court.cases.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.springframework.http.HttpHeaders.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
@@ -18,21 +13,16 @@ public class CorsConfiguration {
     private final ApplicationProperties appProperties;
 
     @Bean
-    public CorsFilter corsFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList(appProperties.getAllowedOrigins()));
-        config.setAllowedHeaders(Arrays.asList(
-                ORIGIN,
-                CONTENT_TYPE,
-                ACCEPT,
-                AUTHORIZATION
-        ));
-        config.setAllowedMethods(Arrays.asList(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
-        ));
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**") // Allow all endpoints
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed HTTP methods
+                        .allowedHeaders("*") // Allow all headers
+                        .allowCredentials(true); // Allow sending cookies
+            }
+        };
     }
 }
