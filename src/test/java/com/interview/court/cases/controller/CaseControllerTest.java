@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.interview.court.cases.model.dto.CourtCaseDto;
 import com.interview.court.cases.model.dto.CourtDto;
 import com.interview.court.cases.model.dto.requests.CaseAndCourtRequest;
+import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,9 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -22,12 +29,24 @@ class CaseControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    private String token;
 
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeEach
+    void setUp() throws Exception {
+        ResultActions resultActions = mockMvc
+                .perform(post("/v1/auth/login")
+                        .with(httpBasic("test@test", "123456789")));
+        MvcResult mvcResult = resultActions.andDo(print()).andReturn();
+        String stringContent = mvcResult.getResponse().getContentAsString();
+        JSONObject json = new JSONObject(stringContent);
+        token = "Bearer " + json.getJSONObject("data").getString("token");
+    }
+
     @Test
-    @WithMockUser(username = "steve.jobs@apple.com", roles = "USER")
+    @WithMockUser(username = "test@test", roles = "USER")
     void createCourtCase() throws Exception {
 
         var request = CaseAndCourtRequest.builder()
@@ -43,11 +62,11 @@ class CaseControllerTest {
                                         .build()
                         ).build();
 
-                var rest = mockMvc.perform(post("/create")
+                var rest = mockMvc.perform(post("/case/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .with(csrf())
+                                //.with(csrf())
                                 .content(mapper.writeValueAsString(request))
-                                .header("Authorization", "Bearer " + "token12345648797897453fghtferad45g4r56hz4ads5f4g5ae46drger"))
+                                .header("Authorization", token))
                         .andExpect(
                                 status()
                                 .isCreated()
