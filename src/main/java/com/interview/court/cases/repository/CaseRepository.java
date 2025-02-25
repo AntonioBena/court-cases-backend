@@ -28,10 +28,10 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
                                        CaseStatus caseStatus, String courtName, String resolvingDecisionLabel);
 
     @Query("""
-SELECT c_case
-FROM Case c_case
-WHERE c_case.caseLabel = :caseLabel
-AND c_case.court.courtName = :courtName
-""")
+    SELECT c_case
+    FROM Case c_case
+    WHERE (:caseLabel IS NULL OR LOWER(c_case.caseLabel) = LOWER(:caseLabel))
+    or (:courtName IS NULL OR LOWER(c_case.court.courtName) = LOWER(:courtName))
+    """)
     Page<Case> findAllCasesByParam(Pageable pageable, String caseLabel, String courtName);
 }

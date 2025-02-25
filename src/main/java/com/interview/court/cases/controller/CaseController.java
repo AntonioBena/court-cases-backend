@@ -34,7 +34,7 @@ public class CaseController {
             description = "Endpoint for updating Court Case",
             summary = "Update Court Case with the corresponding Court"
     )
-    @PostMapping(path = "/update")
+    @PutMapping(path = "/update")
     public ResponseEntity<?> updateCourtCase(@RequestBody CaseAndCourtRequest request) {
         return new ResponseEntity<>(courtCaseService.updateCourtCase(request), HttpStatus.OK);
     }
