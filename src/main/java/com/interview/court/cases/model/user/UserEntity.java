@@ -2,6 +2,8 @@ package com.interview.court.cases.model.user;
 
 import com.interview.court.cases.model.AuditingModel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,12 +29,20 @@ public class UserEntity extends AuditingModel
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_entity_id")
     private Long id;
+    @NotEmpty(message = "First name is mandatory")
+    @NotBlank(message = "First name is mandatory")
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
+    @NotEmpty(message = "Last name is mandatory")
+    @NotBlank(message = "Last name is mandatory")
     private String lastName;
+    @NotEmpty(message = "Password is mandatory")
+    @NotBlank(message = "Password is mandatory")
     @Column(name = "user_password")
     private String password;
+    @NotEmpty(message = "Email is mandatory")
+    @NotBlank(message = "Email is mandatory")
     @Column(name = "user_email", unique = true)
     private String email;
     private boolean enabled;

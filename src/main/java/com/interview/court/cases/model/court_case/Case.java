@@ -4,6 +4,9 @@ import com.interview.court.cases.model.AuditingModel;
 import com.interview.court.cases.model.court.Court;
 import com.interview.court.cases.model.decision.Decision;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.io.Serializable;
@@ -22,6 +25,8 @@ public class Case extends AuditingModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
+    @NotEmpty(message = "Case label is mandatory")
+    @NotBlank(message = "Case label is mandatory")
     @Column(unique=true, name = "case_label")
     private String caseLabel;
 
@@ -29,9 +34,12 @@ public class Case extends AuditingModel implements Serializable {
     @Enumerated(EnumType.STRING)
     private CaseStatus caseStatus;
 
+    @NotEmpty(message = "Description is mandatory")
+    @NotBlank(message = "Description is mandatory")
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
+    @Valid
     @ManyToOne(optional = false)
     @JoinColumn(name = "court_id")
     private Court court;

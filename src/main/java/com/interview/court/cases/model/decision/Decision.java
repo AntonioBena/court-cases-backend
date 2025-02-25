@@ -2,10 +2,11 @@ package com.interview.court.cases.model.decision;
 
 import com.interview.court.cases.model.AuditingModel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -21,7 +22,11 @@ public class Decision extends AuditingModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
+    @NotEmpty(message = "Decision label is mandatory")
+    @NotBlank(message = "Decision label is mandatory")
     private String decisionLabel; //TODO Presuda broj Kv-I-173/16, Odluka broj 29 Su-903/16
+    @NotEmpty(message = "Description is mandatory")
+    @NotBlank(message = "Description is mandatory")
     @Column(name = "description", columnDefinition = "text")
     private String decisionDescription;
     @Enumerated(EnumType.STRING)

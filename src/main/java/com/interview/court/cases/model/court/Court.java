@@ -2,6 +2,8 @@ package com.interview.court.cases.model.court;
 
 import com.interview.court.cases.model.AuditingModel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.io.Serializable;
@@ -19,8 +21,13 @@ public class Court extends AuditingModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "court_id", nullable = false, updatable = false)
     private Long id;
+
+    @NotEmpty(message = "Court name is mandatory")
+    @NotBlank(message = "Court name is mandatory")
     @Column(name = "name")
     private String courtName;
+    @NotEmpty(message = "Address is mandatory")
+    @NotBlank(message = "Address is mandatory")
     @Column(name = "address")
     private String courtAddress; //might be another table
 
