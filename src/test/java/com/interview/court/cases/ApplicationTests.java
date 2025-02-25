@@ -10,4 +10,6 @@ class ApplicationTests {
 	void contextLoads() {
 	}
 
+	//TODO add application tests
+
 }
