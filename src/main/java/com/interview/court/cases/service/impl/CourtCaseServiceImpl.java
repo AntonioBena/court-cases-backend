@@ -93,10 +93,10 @@ public class CourtCaseServiceImpl implements CourtCaseService {
         var newDecisionLabel = caseRequestDto.getResolvingDecisionLabel();
         caseToUpdate.setResolvingDecisionLabel(newDecisionLabel);
         caseToUpdate.setCaseStatus(
-                newDecisionLabel != null ? RESOLVED : IN_PROGRESS
+                newDecisionLabel != null && !newDecisionLabel.isBlank() ? RESOLVED : IN_PROGRESS
         );
         caseToUpdate.setUpdatedAt(LocalDateTime.now());
-        log.info("updated case: {}", caseToUpdate);
+        log.info("updated case with data: {}", caseToUpdate);
 
         var savedc = caseRepository.save(caseToUpdate);
         return mapper.map(savedc, CourtCaseDto.class);
