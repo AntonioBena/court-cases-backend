@@ -13,5 +13,8 @@ missing tests for now
 ### Features
 
 JWT Authentication with login, register and account confirmation via email
+springboot docker-compose 3.4.3
+spring boot actuator
 docker-compose
 OpenApi docs
+PostgreSQL 17.4

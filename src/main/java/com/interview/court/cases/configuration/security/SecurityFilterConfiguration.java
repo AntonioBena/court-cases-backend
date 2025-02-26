@@ -37,6 +37,7 @@ public class SecurityFilterConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         //swagger
                         .requestMatchers("/v2/api/docs").permitAll()
                         .requestMatchers("/v3/api/docs").permitAll()
